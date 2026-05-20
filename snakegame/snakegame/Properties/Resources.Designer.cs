@@ -63,9 +63,39 @@ namespace snakegame.Properties {
         /// <summary>
         ///   Wyszukuje zlokalizowany zasób typu System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Gemini_Generated_Image_2pycu12pycu12pyc {
+            get {
+                object obj = ResourceManager.GetObject("Gemini_Generated_Image_2pycu12pycu12pyc", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Wyszukuje zlokalizowany zasób typu System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap guzik {
+            get {
+                object obj = ResourceManager.GetObject("guzik", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Wyszukuje zlokalizowany zasób typu System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Multimedia {
             get {
                 object obj = ResourceManager.GetObject("Multimedia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Wyszukuje zlokalizowany zasób typu System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap snakemaingamebackground {
+            get {
+                object obj = ResourceManager.GetObject("snakemaingamebackground", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
