@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -16,6 +17,10 @@ namespace snakegame
         private const int Japko = 2;
         private const int FieldSize = 30;
 
+        private System.Windows.Forms.Timer gameTimer;
+        private Point kierunek = new Point(1, 0);
+        private List<Point> wążCiało = new List<Point>();
+
         public Form2()
         {
             InitializeComponent();
@@ -28,12 +33,17 @@ namespace snakegame
 
             this.Load += new EventHandler(Form2_Load);
             this.Paint += new PaintEventHandler(Form2_Paint);
+
+            gameTimer = new System.Windows.Forms.Timer();
+            gameTimer.Interval = 150;
+            gameTimer.Tick += GameTimer_Tick;
         }
 
         private void Form2_Load(object sender, EventArgs e)
         {
             InitializeLogicalBoard();
             SetFullscreen(true);
+            gameTimer.Start();
         }
 
         private void InitializeLogicalBoard()
@@ -50,10 +60,78 @@ namespace snakegame
                 }
             }
 
-            Plansza[12, 10] = SNAKE;
+            Point startPozycja = new Point(12, 10);
+            wążCiało.Clear();
+            wążCiało.Add(startPozycja);
+
+            Plansza[startPozycja.X, startPozycja.Y] = SNAKE;
             Plansza[5, 5] = Japko;
 
             this.Refresh();
+        }
+
+        private void GameTimer_Tick(object sender, EventArgs e)
+        {
+            PoruszWęża();
+        }
+
+        private void PoruszWęża()
+        {
+            Point staraGłowa = wążCiało[0];
+            Point nowaGłowa = new Point(staraGłowa.X + kierunek.X, staraGłowa.Y + kierunek.Y);
+
+            if (nowaGłowa.X < 0 || nowaGłowa.X >= BoardWidth || nowaGłowa.Y < 0 || nowaGłowa.Y >= BoardHeight)
+            {
+                GacieKoniecGry();
+                return;
+            }
+
+            if (Plansza[nowaGłowa.X, nowaGłowa.Y] == SNAKE)
+            {
+                GacieKoniecGry();
+                return;
+            }
+
+            if (Plansza[nowaGłowa.X, nowaGłowa.Y] == Japko)
+            {
+                wążCiało.Insert(0, nowaGłowa);
+                Plansza[nowaGłowa.X, nowaGłowa.Y] = SNAKE;
+
+                GenerujNoweJapko();
+            }
+            else
+            {
+                wążCiało.Insert(0, nowaGłowa);
+                Plansza[nowaGłowa.X, nowaGłowa.Y] = SNAKE;
+
+                Point ogon = wążCiało[wążCiało.Count - 1];
+                Plansza[ogon.X, ogon.Y] = Nic;
+                wążCiało.RemoveAt(wążCiało.Count - 1);
+            }
+
+            this.Refresh();
+        }
+
+        private void GenerujNoweJapko()
+        {
+            Random rand = new Random();
+            int x, y;
+            do
+            {
+                x = rand.Next(0, BoardWidth);
+                y = rand.Next(0, BoardHeight);
+            } while (Plansza[x, y] != Nic);
+
+            Plansza[x, y] = Japko;
+        }
+
+        private void GacieKoniecGry()
+        {
+            gameTimer.Stop();
+            MessageBox.Show("Przegrałeś!", "Koniec Gry");
+            InitializeLogicalBoard();
+            kierunek = new Point(1, 0);
+            gameTimer.Start();
         }
 
         private void Form2_Paint(object sender, PaintEventArgs e)
@@ -93,6 +171,40 @@ namespace snakegame
         {
             if (e.KeyCode == Keys.F11)
                 SetFullscreen(!fs);
+
+            if (e.KeyCode == Keys.Right && kierunek.X != -1)
+            {
+                kierunek = new Point(1, 0);
+            }
+            else if (e.KeyCode == Keys.Left && kierunek.X != 1)
+            {
+                kierunek = new Point(-1, 0);
+            }
+            else if (e.KeyCode == Keys.Up && kierunek.Y != 1)
+            {
+                kierunek = new Point(0, -1);
+            }
+            else if (e.KeyCode == Keys.Down && kierunek.Y != -1)
+            {
+                kierunek = new Point(0, 1);
+            }
+
+            if (e.KeyCode == Keys.D && kierunek.X != -1)
+            {
+                kierunek = new Point(1, 0);
+            }
+            else if (e.KeyCode == Keys.A && kierunek.X != 1)
+            {
+                kierunek = new Point(-1, 0);
+            }
+            else if (e.KeyCode == Keys.W && kierunek.Y != 1)
+            {
+                kierunek = new Point(0, -1);
+            }
+            else if (e.KeyCode == Keys.S && kierunek.Y != -1)
+            {
+                kierunek = new Point(0, 1);
+            }
         }
 
         void SetFullscreen(bool on)
